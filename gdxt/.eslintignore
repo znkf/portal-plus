@@ -1,0 +1,10 @@
+
+conifg
+docs
+public
+node_modules
+build/*.js
+src/assets
+src/components
+src/mock
+dist

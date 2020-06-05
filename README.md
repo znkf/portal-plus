@@ -1,19 +1,19 @@
-# znkf
+# gdxt （工单系统）
+# portal-plus （机器人）
+# zmhd(证明互动前端)
 
-## 1.安装依赖
+# 三个项目的启动方式都是一样的，如下
+## 安装依赖
 ```
 npm install
 ```
 
-### 2.编译运行测试环境
+### 编译本地允许
 ```
 npm run serve
 ```
 
-### 3.打包
+### 打包生产
 ```
 npm run build
 ```
-
-### 自定义配置
-See [Configuration Reference](https://cli.vuejs.org/config/).

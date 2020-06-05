@@ -1,0 +1,322 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+@font-face {
+  font-family: FZLTXHJW--GB1-0;
+  font-weight: normal;
+  font-style: normal;
+  src: url("../assets/font.ttf");
+}
+@font-face {
+  font-family: FZLTCHK--GBK1-0;
+  font-weight: normal;
+  font-style: normal;
+  src: url("../assets/font_GBK.TTF");
+}
+
+* {
+  box-sizing: border-box;
+}
+input,
+textarea {
+  box-shadow: 0;
+  border: 0;
+  outline: 0;
+}
+html {
+  font-size: 20px;
+}
+@media screen and (max-width: 1593px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1583px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1573px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1563px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1553px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1543px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1533px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1523px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1513px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1503px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1493px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1483px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1473px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1463px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1453px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1443px) {
+  html {
+    font-size: 18.66195437px;
+  }
+}
+@media screen and (max-width: 1433px) {
+  html {
+    font-size: 18.59047757px;
+  }
+}
+@media screen and (max-width: 1423px) {
+  html {
+    font-size: 18.5207231px;
+  }
+}
+@media screen and (max-width: 1413px) {
+  html {
+    font-size: 18.45269097px;
+  }
+}
+@media screen and (max-width: 1403px) {
+  html {
+    font-size: 18.38638117px;
+  }
+}
+@media screen and (max-width: 1393px) {
+  html {
+    font-size: 18.32179371px;
+  }
+}
+@media screen and (max-width: 1383px) {
+  html {
+    font-size: 18.25892857px;
+  }
+}
+@media screen and (max-width: 1373px) {
+  html {
+    font-size: 18.19778577px;
+  }
+}
+@media screen and (max-width: 1363px) {
+  html {
+    font-size: 18.1383653px;
+  }
+}
+@media screen and (max-width: 1353px) {
+  html {
+    font-size: 18.08066716px;
+  }
+}
+@media screen and (max-width: 1343px) {
+  html {
+    font-size: 18.02469136px;
+  }
+}
+@media screen and (max-width: 1333px) {
+  html {
+    font-size: 17.97043789px;
+  }
+}
+@media screen and (max-width: 1323px) {
+  html {
+    font-size: 17.91790675px;
+  }
+}
+@media screen and (max-width: 1313px) {
+  html {
+    font-size: 17.86709794px;
+  }
+}
+@media screen and (max-width: 1303px) {
+  html {
+    font-size: 17.81801146px;
+  }
+}
+@media screen and (max-width: 1293px) {
+  html {
+    font-size: 17.77064732px;
+  }
+}
+@media screen and (max-width: 1283px) {
+  html {
+    font-size: 17.72500551px;
+  }
+}
+@media screen and (max-width: 1273px) {
+  html {
+    font-size: 17.68108603px;
+  }
+}
+@media screen and (max-width: 1263px) {
+  html {
+    font-size: 17.63888889px;
+  }
+}
+@media screen and (max-width: 1253px) {
+  html {
+    font-size: 17.59841408px;
+  }
+}
+@media screen and (max-width: 1243px) {
+  html {
+    font-size: 17.5596616px;
+  }
+}
+@media screen and (max-width: 1233px) {
+  html {
+    font-size: 17.52263145px;
+  }
+}
+@media screen and (max-width: 1223px) {
+  html {
+    font-size: 17.48732363px;
+  }
+}
+@media screen and (max-width: 1213px) {
+  html {
+    font-size: 17.45373815px;
+  }
+}
+@media screen and (max-width: 1203px) {
+  html {
+    font-size: 17.421875px;
+  }
+}
+@media screen and (max-width: 1193px) {
+  html {
+    font-size: 17.39173418px;
+  }
+}
+@media screen and (max-width: 1183px) {
+  html {
+    font-size: 17.3633157px;
+  }
+}
+@media screen and (max-width: 1173px) {
+  html {
+    font-size: 17.33661954px;
+  }
+}
+@media screen and (max-width: 1163px) {
+  html {
+    font-size: 17.31164572px;
+  }
+}
+@media screen and (max-width: 1153px) {
+  html {
+    font-size: 17.28839424px;
+  }
+}
+@media screen and (max-width: 1143px) {
+  html {
+    font-size: 17.26686508px;
+  }
+}
+@media screen and (max-width: 1133px) {
+  html {
+    font-size: 17.24705826px;
+  }
+}
+@media screen and (max-width: 1123px) {
+  html {
+    font-size: 17.22897377px;
+  }
+}
+@media screen and (max-width: 1113px) {
+  html {
+    font-size: 17.21261161px;
+  }
+}
+@media screen and (max-width: 1103px) {
+  html {
+    font-size: 17.19797178px;
+  }
+}
+@media screen and (max-width: 1093px) {
+  html {
+    font-size: 17.18505429px;
+  }
+}
+@media screen and (max-width: 1083px) {
+  html {
+    font-size: 17.17385913px;
+  }
+}
+@media screen and (max-width: 1073px) {
+  html {
+    font-size: 17.1643863px;
+  }
+}
+@media screen and (max-width: 1063px) {
+  html {
+    font-size: 17.1566358px;
+  }
+}
+@media screen and (max-width: 1053px) {
+  html {
+    font-size: 17.15060764px;
+  }
+}
+@media screen and (max-width: 1043px) {
+  html {
+    font-size: 17.14630181px;
+  }
+}
+@media screen and (max-width: 1033px) {
+  html {
+    font-size: 17.14371831px;
+  }
+}
+@media screen and (max-width: 1023px) {
+  html {
+    font-size: 17.14285714px;
+  }
+}
+
