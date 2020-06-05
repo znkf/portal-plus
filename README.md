@@ -17,3 +17,20 @@ npm run serve
 ```
 npm run build
 ```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### 框架 vue-antd-pro
+See [vue-antd-pro](https://www.antdv.com/docs/vue/introduce-cn/).
+
+### vue-cli
+
+See [vue-cli](https://cli.vuejs.org/).
