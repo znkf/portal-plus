@@ -1,4 +1,4 @@
-import { TEXT, DETAIL, ANSWER, QUESTION } from "../config/messageType";
+import { TEXT, DETAIL, ANSWER, QUESTION , NEW_QUESTION} from "../config/messageType";
 export default {
   data() {
     return {
@@ -8,9 +8,11 @@ export default {
       subDictShow: false, //
       allDict: [], //区：岳麓区/芙蓉区/长沙市直...
       allDictChildren: [], //区下面的街道
+      allDictChildrenNew: [], //街道下面的办事处
       mmm: {}, //存档当前区下的街道是否加载过的flag
       currentViewDict: "", //当前查看的区
       currentViewStreent: "", //当前查看的街道
+      currentViewStreentNew: "",//当前查看的办事处
       currentViewDictLabel: "", //当前查看的街道的名字
       suggestions: [], //输入联想
       showModal: false, //pc 显示输入反馈意见的modal
@@ -45,6 +47,7 @@ export default {
         // }
       ], //更多应用
       iconUrl: "",
+      oneEventName: []
     };
   },
   computed: {
@@ -71,6 +74,13 @@ export default {
     getTel() {
       this.$api.getTel().then((res) => {
         this.tel = res.data.phone;
+      });
+    },
+    handleNewAnswers(item) {
+      this.onAddMessage({
+        send: false,
+        contentType: TEXT,
+        content: item,
       });
     },
     handleSatisfy(item) {
@@ -321,6 +331,18 @@ export default {
         }
       });
     },
+    //一件事一次办字典
+    getOneEvent(){
+      this.$api.getOneEvent().then((res) => {
+        console.log(res)
+        res.data.list.map((c)=>{
+          c.list.map((cc)=>{
+            this.oneEventName = this.oneEventName.concat(cc.list)
+          })
+        })
+        console.log(this.oneEventName)
+      })
+    },
     // 猜你想问
     getCommonQuestion() {
       this.$api.getCommonQuestiones().then((res) => {
@@ -329,6 +351,7 @@ export default {
           let questiones = res.data.question.split(";");
           this.defaultCommonQuestioned = questiones;
         }
+		
       });
       // this.$api.getCommonQuestion().then(res => {
       //   if (res.data && res.data.question) {
@@ -354,48 +377,90 @@ export default {
       let targetAnswer = info[0];
       if (targetAnswer) {
         let { answer, id } = targetAnswer;
-        if (answer.startsWith("approveCode:")) {
-          let code = answer.split("approveCode:")[1];
-          this.$api.getAuditItemDetail_Cur(code).then((res2) => {
-            if (res2.data && res2.data.AUDIT_ITEM) {
-              this.onAddMessage({
+        if (answer.startsWith("approveId:") && res.type != 300) {
+			// console.log("替换id",info,targetAnswer,answer)
+          let code = answer.split("approveId:")[1];
+          this.$api.getRightsTempByPage(code).then((res1) => {
+          var appId = res1.data.contents[0].approveId
+          var code1 = res1.data.contents[0].taskhandleitem != "" ? res1.data.contents[0].taskhandleitem : res1.data.contents[0].approveCode
+          this.$api.getAuditItemDetail_Cur(code1).then((res2) => {
+          if (res2.data && res2.data.AUDIT_ITEM) {
+            this.onAddMessage({
+            send: false,
+            contentType: DETAIL,
+            content: res2.data,
+            showFd: true,
+            targetAnswer: targetAnswer,
+            corre_water_feedback: res.corre_water_feedback,
+            });
+          } else {
+            let tel = this.tel;
+            this.onAddMessage({
+            send: false,
+            contentType: TEXT,
+            content: `暂无具体内容,您可以拨打<a
+              href='tel:${tel}'
+            >${tel}</a>进行咨询`,
+            });
+          }
+          if(appId){
+            this.$api.getEventDetail(appId).then((res3) => {
+              if(res3.data.total != 0){
+              if (res3.data) {
+                this.onAddMessage({
                 send: false,
-                contentType: DETAIL,
-                content: res2.data,
+                contentType: NEW_QUESTION,
+                content: res3.data.contents,
                 showFd: true,
                 targetAnswer: targetAnswer,
-                corre_water_feedback: res.corre_water_feedback,
-              });
-            } else {
-              let tel = this.tel;
-              this.onAddMessage({
-                send: false,
-                contentType: TEXT,
-                content: `暂无具体内容,您可以拨打<a
-                  href='tel:${tel}'
-                >${tel}</a>进行咨询`,
-              });
-            }
-            this.pageLoading = false;
+                });
+              }
+              this.pageLoading = false;
+              }
+            })
+          }
+          this.pageLoading = false;
           });
+        });
           return;
         }
         let msgType = res.type;
         //如果是200直接回答显示 relate
         // 如果是300显示info中的 question
-        if (msgType == 200) {
-          this.onAddMessage({
-            send: false,
-            contentType: ANSWER,
-            content: info,
-          });
-        } else if (msgType == 300) {
+        // if (msgType == 200) {
+        //   this.onAddMessage({
+        //     send: false,
+        //     contentType: ANSWER,
+        //     content: info,
+        //   });
+        // }
+		let kfrg = targetAnswer.answer.substring(3,7)
+		let answer_info = targetAnswer.answer.replace(kfrg,"")
+		let infos = answer_info.replace(/430101000000/g,this.currentViewDict)
+		if (msgType == 300) {
           this.onAddMessage({
             send: false,
             contentType: QUESTION,
             content: info,
           });
+        } else if ( kfrg === "#ZRG"){
+        this.onAddMessage({
+          send: false,
+          contentType: TEXT,
+          content: infos,
+        });
+      } else if ( msgType === 200){
+        if(info[0].answer != "您好，当前区划没有对应的事项。"){
+          if(!info[0].answer.startsWith("onething:")){
+            this.onAddMessage({
+              send: false,
+              contentType: ANSWER,
+              content: info,
+            });
+          }
         }
+        
+      }
         this.pageLoading = false;
       }
     },
@@ -421,6 +486,44 @@ export default {
           labels,
           ip:this.locationIp
         });
+        if(labels === "430101000000"){
+          labels = "430100000000"
+        }
+        if(res.info[0].answer === "您好，当前区划没有对应的事项。"){
+          this.$api.getEventclause(res.raw_query,labels).then((res) => {
+            let labels_d = res.data.data.guide.data.map((c)=>{
+              return `<div><a target="_blank" style="color:#2e5aa6" href=${'http://zwfw-new.hunan.gov.cn/portal/guide/'+c.code}>【${c.region}】${c.highlightTitle}</a></div>`
+            })
+            this.onAddMessage({
+              send: false,
+              contentType: TEXT,
+              content: `<div class="item__content__title"<span">我还很年轻，暂时无法了解到您的准确意图，您看是否是想问以下问题：</span></div></br>${labels_d.join('')}`
+            });
+          })
+        }
+        if(res.info[0].answer.startsWith("onething:")){
+          let keyname = res.info[0].answer.slice(9);
+          let nn = this.oneEventName.filter(item => {
+            return item.name === keyname
+          })
+          let labels_n = nn[0].list.map((c) => {
+            let labels_r = c.countyCode != "none"?this.allDict.filter((code) => {return code.orgXzqm === c.countyCode})[0].label:"长沙直市"
+            let labels_a = c.compType != ""? c.compType.map((c)=>{return `<a target="_blank" style="color:#2e5aa6" href=${'http://zwfw-new.hunan.gov.cn'+c.url}>（${c.name}）</a>`}):`<a target="_blank" style="color:#2e5aa6" href=${c.url}>${labels_r}</a>`
+            if(c.url === "" || c.url === "1"){
+              return `<div><span>【${labels_r}】</span>${labels_a.join('')}</div>`
+            }else{
+              return `<div><span>${labels_a}</span>`
+            }
+            
+          })
+          let labels_t = nn[0].warm_tips != "" ? `<div class="item__content__title"><span>${nn[0].warm_tips}</span></div></br>` : ""
+          this.onAddMessage({
+            send: false,
+            contentType: TEXT,
+            content: `<div class="item__content__title"><span>${nn[0].name}：</span></div></br>${labels_t}${labels_n.join('')}`
+          });
+          console.log("进入",keyname,nn)
+        }
         if (res.msg == "success") {
           //  判断 approveCode:55430111060110383Y00000000000000
           if (res.reject_recog == 1) {
@@ -436,14 +539,16 @@ export default {
                 ip:this.locationIp
               });
               if (resReject_recog2.reject_recog == 1) {
-                let tel = this.tel;
-                this.onAddMessage({
-                  send: false,
-                  contentType: TEXT,
-                  content: `当前区域暂无该问题的具体回复,您可以拨打<a
-            href='tel:${tel}'
-          >${tel}</a>进行咨询`,
-                });
+                this.$api.getEventclause(res.raw_query,labels).then((res) => {
+                  let labels_d = res.data.data.guide.data.map((c)=>{
+                    return `<div><a target="_blank" style="color:#2e5aa6" href=${'http://zwfw-new.hunan.gov.cn/portal/guide/'+c.code}>【${c.region}】${c.highlightTitle}</a></div>`
+                  })
+                  this.onAddMessage({
+                    send: false,
+                    contentType: TEXT,
+                    content: `<div class="item__content__title"><span>我还很年轻，暂时无法了解到您的准确意图，您看是否是想了解以下信息：</span></div></br>${labels_d.join('')}`
+                  });
+                })
                 this.pageLoading = false;
                 return;
               }
@@ -459,10 +564,10 @@ export default {
           return;
         }
         this.pageLoading = false;
-        errMsg = "系统正在升级中，请稍后再试...";
+        errMsg = "当前使用的人较多，请稍后再试";
       } catch (err) {
         this.pageLoading = false;
-        errMsg = "系统正在升级中，请稍后再试...";
+        errMsg = "当前使用的人较多，请稍后再试";
       }
       this.pageLoading = false;
       errMsg &&

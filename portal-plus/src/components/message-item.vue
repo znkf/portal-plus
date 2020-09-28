@@ -1,5 +1,6 @@
 <template>
   <div class="m-message__item" :class="{m__right:transfer}">
+	<!-- <img v-if="!transfer"  src="../assets/images/logo.png" /> -->
     <div class="message__item__content" v-if="type === typeMap.TEXT">
       <div v-html="innerCont"></div>
     </div>
@@ -50,6 +51,18 @@
     </div>
     <div
       class="message__item__content"
+      v-else-if="type === typeMap.NEW_QUESTION"
+      style="border-radius:10px"
+    >
+      <div>
+        <div class="item__content__title">您是否还想问：</div>
+        <div class="question-list">
+          <new-detail @handleNewAnswer="handleNewAnswer" :detail="content"></new-detail>
+        </div>
+      </div>
+    </div>
+    <div
+      class="message__item__content"
       v-else-if="type === typeMap.DETAIL&&content.AUDIT_ITEM"
       style="border-radius:10px;"
     >
@@ -86,15 +99,18 @@ import {
   FAQ,
   CHAT,
   ANSWER,
-  QUESTION
+  QUESTION,
+  NEW_QUESTION
 } from "../config/messageType";
 import CollapseList from "./collapse-list";
 import SxDetail from "./sx-detail";
+import NewDetail from "./new-detail";
 import messageItemAnswer from './message-item-answer'
 export default {
   components: {
     CollapseList,
     SxDetail,
+    NewDetail,
     messageItemAnswer
   },
   props: ["item", "type", "content", "transfer", "hidefooter"],
@@ -108,7 +124,8 @@ export default {
         FAQ,
         CHAT,
         ANSWER,
-        QUESTION
+        QUESTION,
+        NEW_QUESTION
       },
       collapse: true
     };
@@ -135,6 +152,10 @@ export default {
     },
     handleUnsatisfy() {
       this.$emit("unsatisfy", this.item);
+    },
+    handleNewAnswer(data) {
+      console.log("fu",data)
+      this.$emit("newanswer",data);
     },
     handleAnswer(question) {
       this.$emit("selectquestion", question);

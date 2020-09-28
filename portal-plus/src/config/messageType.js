@@ -7,3 +7,4 @@ export const FAQ = 4
 export const CHAT = 5
 export const ANSWER = 6
 export const QUESTION = 7
+export const NEW_QUESTION = 8

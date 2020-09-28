@@ -8,6 +8,7 @@
       :hidefooter="true"
       @satisfy="handleSatisfy"
       @unsatisfy="handleUnsatisfy"
+      @newanswer="handleNewAnswers"
     />
     <div class="m-message__item" v-if="gqList&&gqList.length&&mobile">
       <div class="message__item__content you-like">
@@ -33,6 +34,7 @@
       @selectquestion='selectquestionQ'
       @satisfy="handleSatisfy"
       @unsatisfy="handleUnsatisfy"
+      @newanswer="handleNewAnswers"
     />
   </div>
 </template>
@@ -75,7 +77,11 @@ export default {
     },
     handleSelectMessage(item) {
       this.$emit("selectmessage", item);
-    }
+    },
+    handleNewAnswers(item) {
+      console.log("我要答案",item)
+      this.$emit("newanswer",item);
+    },
   }
 };
 </script>
@@ -269,5 +275,8 @@ export default {
 }
 .m__right {
   text-align: right;
+}
+.search-highlight{
+  color: red;
 }
 </style>

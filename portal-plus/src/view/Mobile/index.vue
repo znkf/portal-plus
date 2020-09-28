@@ -2,7 +2,7 @@
   <div class="m-wrapper">
     <div class="m-header">
       <span class="m-header__icon">
-        <img :src="iconUrl" alt="logo" style="width:100%" />
+        <img src="../../assets/images/logo.png" alt="logo" style="width:100%" />
       </span>
       <span style="margin-left:12px;">智能客服系统</span>
     </div>
@@ -15,6 +15,7 @@
             @selectmessage="selectmessage"
             @satisfy="handleSatisfy"
             @unsatisfy="handleUnsatisfy"
+            @newanswer="handleNewAnswers"
             :gqList="commonQuestiones"
             :mobile="true"
           />

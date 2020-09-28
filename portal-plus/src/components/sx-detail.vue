@@ -133,7 +133,7 @@ export default {
     },
     bsznUrl() {
       return (
-        "http://superbrain.0x5f81.cn/portal/guide/" +
+        "http://zwfw-new.hunan.gov.cn/portal/guide/" +
         this.detail.AUDIT_ITEM.TASK_CODE
       );
     }

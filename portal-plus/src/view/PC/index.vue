@@ -3,7 +3,7 @@
     <div class="yz" :style="containerStyle">
       <div class="yz-header">
         <div class="yz-header-logo">
-          <img :src="iconUrl" alt="logo" />
+          <img src="../../assets/images/logo.png" alt="logo" />
         </div>
         <div class="yz-header-title">智能客服</div>
       </div>
@@ -17,6 +17,7 @@
                 @selectquestion="selectquestion"
                 @satisfy="handleSatisfy"
                 @unsatisfy="handleUnsatisfy"
+                @newanswer="handleNewAnswers"
               />
             </div>
           </div>
@@ -44,6 +45,14 @@
           >
             <option :value="d.orgXzqm" v-for="d in dictChildren" :key="d.orgXzqm">{{d.label}}</option>
           </select>
+          <select
+            v-if="dictChildrenNew.length"
+            class="selet-cell"
+            @change="handleStreetChangeNew"
+            :value="currentViewStreentNew"
+          >
+            <option :value="d.orgXzqm" v-for="d in dictChildrenNew" :key="d.orgXzqm">{{d.label}}</option>
+          </select>
           <img
             class="tools-image"
             style="margin-left:20px;cursor:pointer;"
@@ -70,7 +79,7 @@
       </div>
       <div class="yz-tool" :style="containerStyle3">
         <div class="yz-tool-hot tool-item">
-          <h3 class="tool-title">猜您想问</h3>
+          <h3 class="tool-title">热门问题</h3>
           <div style>
             <ul class="hot-list" v-if="commonQuestiones.length">
               <li
@@ -84,7 +93,7 @@
           </div>
         </div>
         <div class="yz-tool-entry tool-item">
-          <h3 class="tool-title">其他功能</h3>
+          <h3 class="tool-title">外链列表</h3>
           <ul class="entry-list">
             <li :title="app.name" v-for="(app,index) in moreApps" :key="'a_'+index">
               <a :href="app.url" target="blank">
@@ -112,6 +121,7 @@
         <div class="close" @click="closeFB">
           <!-- <a-icon type="close" /> -->
         </div>
+		<div class="yz-header-title">反馈详情</div>
         <div>请告诉我们对您没有帮助的原因，我们将会继续改进：</div>
         <textarea v-model="fbMsg"></textarea>
         <div class="m-subbmit_btn" @click="summitFB">提交反馈</div>
@@ -160,11 +170,23 @@ export default {
         return target.data;
       }
       return [];
-    }
+    },
+    dictChildrenNew() {
+      let target = this.allDictChildrenNew.filter(
+        a => a.key == this.currentViewStreent
+      )[0];
+      if (target) {
+        return target.data;
+      }
+      return [];
+    },
   },
   watch: {
     dictChildren(newVal, oldVal) {
       newVal[0] && (this.currentViewStreent = newVal[0].orgXzqm);
+    },
+    dictChildrenNew(newVal, oldVal) {
+      newVal[0] && (this.currentViewStreentNew = newVal[0].orgXzqm);
     }
   },
   updated() {
@@ -182,6 +204,7 @@ export default {
   mixins: [sendMessageJs],
   async created() {
     this.getGreentings();
+    this.getOneEvent();
     this.getIcon();
     this.getTel();
     await this.handleLocation();
@@ -254,13 +277,68 @@ export default {
       let streetTarget = this.dictChildren.filter(
         a => a.orgXzqm == _orgXzqm
       )[0];
-      if (dictTarget && streetTarget) {
-        let label = dictTarget.label;
+      if(e.target.value.substring(6) == "999000"){
+        this.currentViewStreentNew = ""
         let labelw = streetTarget.label;
         this.onAddMessage({
           send: false,
           contentType: TEXT,
-          content: `当前区域切换为：${label},${labelw}`
+          content: `当前区域切换为：${dictTarget.label},${labelw}`
+        });
+        return
+      }
+      this.getOrgInfoById(this.currentViewStreent).then(ll => {
+        let contents = ll.data.contents;
+        this.mmm[_orgXzqm] = true;
+        let key = _orgXzqm;
+        contents.sort((a, b) => a.orgXzqm - b.orgXzqm);
+        let _d = contents.map(c => {
+          let { orgShowname, orgXzqm, sjXzqm, orgId } = c;
+          return {
+            label: orgShowname,
+            value: orgShowname,
+            orgXzqm,
+            sjXzqm,
+            orgId,
+            pid: _orgXzqm
+          };
+        });
+        _d.reverse()
+        let obj = {
+          key,
+          data: _d
+        };
+        let labelw = streetTarget.label;
+        this.onAddMessage({
+          send: false,
+          contentType: TEXT,
+          content: `当前区域切换为：${dictTarget.label},${labelw},${_d[0].label}`
+        });
+        this.currentViewStreentNew = _d[0].label
+        this.allDictChildrenNew.push(obj);
+        this.pageLoading = false;
+      })
+    },
+    handleStreetChangeNew(e) {
+      let _orgXzqm = parseInt(e.target.value);
+      this.currentViewStreentNew = _orgXzqm;
+      let dictTarget = this.allDict.filter(
+        a => a.orgXzqm == this.currentViewDict
+      )[0];
+      let streetTarget = this.dictChildren.filter(
+        a => a.orgXzqm == this.currentViewStreent
+      )[0];
+      let newTarget = this.dictChildrenNew.filter(
+        a => a.orgXzqm == _orgXzqm
+      )[0];
+      if (dictTarget && streetTarget) {
+        let label = dictTarget.label;
+        let labelw = streetTarget.label;
+        let labelws = newTarget.label
+        this.onAddMessage({
+          send: false,
+          contentType: TEXT,
+          content: `当前区域切换为：${label},${labelw},${labelws}`
         });
       }
     },
@@ -270,6 +348,7 @@ export default {
       if (dictTarget && dictTarget.label == "长沙市直") {
         this.currentViewDict = String(_orgXzqm);
         this.currentViewStreent = "";
+        this.currentViewStreentNew = ""
         this.mmm[_orgXzqm] = true;
         if (dictTarget) {
           let label = dictTarget.label;

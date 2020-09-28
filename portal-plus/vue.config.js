@@ -32,7 +32,6 @@ module.exports = {
         secure: false,
         pathRewrite: { "^/znkf": "znkf" }
       },
-    
       "/ws/*": {
         target: "http://apis.map.qq.com",
         changeOrigin: true,
@@ -50,6 +49,12 @@ module.exports = {
         changeOrigin: true,
         secure: false,
         pathRewrite: { "^/ebus": "ebus" }
+      },
+      "/portal/*": {
+        target: "https://zwfw-new.hunan.gov.cn/",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { "^/portal": "portal" }
       }
     }
   },
